@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -17,7 +17,25 @@ import { useRouter } from "next/navigation";
 export function WalletView() {
   const router = useRouter();
   const [showCardDetails, setShowCardDetails] = useState(false);
+  const [balance, setBalance] = useState("0.00");
   const isWorldApp = MiniKit.isInstalled();
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const response = await fetch("/api/portfolio/metrics");
+        if (!response.ok) throw new Error("Failed to fetch balance");
+        const { currentValue } = await response.json();
+        const value = currentValue[0]?.value_usd || 0;
+        setBalance(value.toFixed(2));
+      } catch (error) {
+        console.error("Failed to fetch balance:", error);
+        setBalance("0.00");
+      }
+    };
+
+    fetchBalance();
+  }, []);
 
   const handleAction = (action: string) => {
     switch (action) {
@@ -26,6 +44,9 @@ export function WalletView() {
         break;
       case "Receive":
         router.push("/receive");
+        break;
+      case "Portfolio":
+        router.push("/portfolio");
         break;
     }
   };
@@ -38,7 +59,7 @@ export function WalletView() {
         <CreditCard className="mb-6" size={32} />
         {/* Balance Display */}
         <p className="text-3xl font-bold mb-4">
-          Balance: {showCardDetails ? "$5,432.10" : "***.***"}
+          {showCardDetails ? `$${balance} xDAI` : "$****.**"}
         </p>
         {/* Toggle Button */}
         <button
