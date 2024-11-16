@@ -8,6 +8,9 @@ import {
 } from "@worldcoin/minikit-js";
 import { useCallback, useState } from "react";
 
+const actionId = process.env.NEXT_PUBLIC_WLD_ACTION_ID as string;
+if (!actionId) throw new Error("NEXT_PUBLIC_WLD_ACTION_ID is not set");
+
 export type VerifyCommandInput = {
   action: string;
   signal?: string;
@@ -15,7 +18,7 @@ export type VerifyCommandInput = {
 };
 
 const verifyPayload: VerifyCommandInput = {
-  action: "test-action", // This is your action ID from the Developer Portal
+  action: actionId, // This is your action ID from the Developer Portal
   signal: "",
   verification_level: VerificationLevel.Orb, // Orb | Device
 };
