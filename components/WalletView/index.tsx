@@ -48,6 +48,9 @@ export function WalletView() {
       case "Portfolio":
         router.push("/portfolio");
         break;
+      case "Savings":
+        router.push("/savings");
+        break;
     }
   };
 
